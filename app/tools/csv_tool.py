@@ -9,4 +9,4 @@ def read_csv(file_path: str) -> str:
         return df.to_string()
     except Exception as e:
         logger.error(f"Erro ao ler CSV: {e}")
-    return f"Erro ao ler CSV: {e}"
+        return f"Erro ao ler CSV: {e}"

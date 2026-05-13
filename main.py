@@ -5,8 +5,8 @@ def main():
     logger.info("Iniciando o agente...")
     graph = build_graph()
 
-    file_path = input("Caminho do arquivo (CSV ou PDF): ").strip()
-    question = input("Sua pergunta: ").strip()
+    file_path = input("Document path (CSV or PDF): ").strip()
+    question = input("Your question: ").strip()
 
     result = graph.invoke({
         "question": question,

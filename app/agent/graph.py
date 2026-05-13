@@ -46,16 +46,31 @@ def process_document(state: AgentState) -> AgentState:
 
     logger.info("Enviando documento para o LLM...")
     response = llm.invoke(
-        f"Com base no documento abaixo, responda: {state['question']}\n\n{content}"
+        f"Based on the document below, answer the following question: {state['question']}\n\n{content}"
     )
     state["answer"] = response.content
     return state
 
+def route_file(state: AgentState) -> str:
+    if state["file_type"] == "unknown":
+        return "error"
+    return "process"
+
 def build_graph():
     graph = StateGraph(AgentState)
+
     graph.add_node("detect", detect_file_type)
     graph.add_node("process", process_document)
+    graph.add_node("error", lambda state: {**state, "answer": "Unsupported file format. Please upload a CSV or PDF."})
+
     graph.set_entry_point("detect")
-    graph.add_edge("detect", "process")
+
+    graph.add_conditional_edges("detect", route_file, {
+        "process": "process",
+        "error": "error"
+    })
+
     graph.add_edge("process", END)
+    graph.add_edge("error", END)
+
     return graph.compile()
