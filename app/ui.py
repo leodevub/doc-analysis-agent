@@ -132,7 +132,7 @@ else:
 
     col1, col2 = st.columns([4, 1])
     with col1:
-        st.markdown("## Doc**vyn**")
+        st.markdown("## Doc<span style='color:#ef4444'>vyn</span>", unsafe_allow_html=True)
     with col2:
         if st.button("Logout", use_container_width=True):
             del st.session_state.token
