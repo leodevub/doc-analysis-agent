@@ -6,6 +6,7 @@ AI-powered agent that analyzes CSV and PDF files and answers questions in any la
 **API Docs:** https://docvyn-api2.onrender.com/docs
 
 ```
+> ⚠️ Demo credentials — for testing only, do not use in production
 Username: admin  
 Password: admin123
 ```
