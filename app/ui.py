@@ -55,21 +55,13 @@ st.markdown("""
     .answer-box {
         background: #1c1c1c;
         border: 1px solid #2a2a2a;
-        border-left: 3px solid #818cf8;
+        border-left: 3px solid #ef4444;
         border-radius: 0 12px 12px 0;
         padding: 1.5rem 2rem;
         margin-top: 1.5rem;
         line-height: 1.9;
         color: #d1d5db;
         font-size: 0.95rem;
-    }
-
-    .upload-box {
-        background: #1c1c1c;
-        border: 1px dashed #2a2a2a;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
     }
 
     .stTextInput>div>div>input {
@@ -87,18 +79,13 @@ st.markdown("""
         width: 100%;
     }
 
-    label, p, .stMarkdown {
-        color: #9ca3af !important;
-    }
-
-    h1, h2, h3 {
-        color: #f9fafb !important;
-    }
+    label, p, .stMarkdown { color: #9ca3af !important; }
+    h1, h2, h3 { color: #f9fafb !important; }
 
     .pill {
         display: inline-block;
-        background: #1e1e3a;
-        color: #818cf8;
+        background: #1e1e1e;
+        color: #ef4444;
         padding: 3px 12px;
         border-radius: 999px;
         font-size: 0.75rem;
@@ -126,7 +113,7 @@ if "token" not in st.session_state:
     with st.form("login_form"):
         username = st.text_input("Username", placeholder="admin")
         password = st.text_input("Password", type="password", placeholder="••••••••")
-        submit = st.form_submit_button("Entrar →", type="primary", use_container_width=True)
+        submit = st.form_submit_button("Sign in →", type="primary", use_container_width=True)
 
         if submit:
             response = requests.post(f"{API_URL}/token", data={
@@ -137,7 +124,7 @@ if "token" not in st.session_state:
                 st.session_state.token = response.json()["access_token"]
                 st.rerun()
             else:
-                st.error("Usuário ou senha incorretos")
+                st.error("Invalid username or password")
 
 # DASHBOARD
 else:
@@ -145,20 +132,19 @@ else:
 
     col1, col2 = st.columns([4, 1])
     with col1:
-        st.markdown("## Doc<span style='color:#ef4444'>vyn</span>", unsafe_allow_html=True)
+        st.markdown("## Doc**vyn**")
     with col2:
-        if st.button("Sair", use_container_width=True):
+        if st.button("Logout", use_container_width=True):
             del st.session_state.token
             st.rerun()
 
     st.markdown("<hr class='divider'>", unsafe_allow_html=True)
 
-    # Upload
-    st.markdown("#### 📂 Documento")
-    file = st.file_uploader("Envie um CSV ou PDF", type=["csv", "pdf"], label_visibility="collapsed")
+    st.markdown("#### 📂 Document")
+    file = st.file_uploader("Upload a CSV or PDF", type=["csv", "pdf"], label_visibility="collapsed")
 
     if file:
-        with st.spinner("Indexando documento..."):
+        with st.spinner("Indexing document..."):
             response = requests.post(
                 f"{API_URL}/upload",
                 files={"file": (file.name, file, file.type)},
@@ -166,22 +152,21 @@ else:
             )
         if response.status_code == 200:
             st.session_state.file_loaded = file.name
-            st.success(f"✅ {file.name} indexado com sucesso!")
+            st.success(f"✅ {file.name} indexed successfully!")
         else:
-            st.warning("⚠️ Arquivo pode já estar indexado")
+            st.warning("⚠️ File may already be indexed")
 
     if "file_loaded" in st.session_state:
         st.markdown(f'<span class="pill">📄 {st.session_state.file_loaded}</span>', unsafe_allow_html=True)
 
     st.markdown("<hr class='divider'>", unsafe_allow_html=True)
 
-    # Pergunta
-    st.markdown("#### 💬 Sua pergunta")
-    question = st.text_input("Pergunta", placeholder="Digite em qualquer idioma...", label_visibility="collapsed")
+    st.markdown("#### 💬 Your question")
+    question = st.text_input("Question", placeholder="Ask in any language...", label_visibility="collapsed")
 
-    if st.button("Analisar →", type="primary"):
+    if st.button("Analyze →", type="primary"):
         if question:
-            with st.spinner("Analisando..."):
+            with st.spinner("Analyzing document..."):
                 response = requests.post(
                     f"{API_URL}/ask",
                     params={"question": question},
@@ -190,8 +175,8 @@ else:
             if response.status_code == 200:
                 data = response.json()
                 st.markdown(f"<div class='answer-box'>{data['answer']}</div>", unsafe_allow_html=True)
-                st.caption(f"🌐 Idioma detectado: `{data['language_detected']}`")
+                st.caption(f"🌐 Language detected: `{data['language_detected']}`")
             else:
-                st.error("Erro ao processar pergunta")
+                st.error("Error processing question")
         else:
-            st.warning("Digite uma pergunta primeiro")
+            st.warning("Please enter a question first")
