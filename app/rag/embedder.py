@@ -3,7 +3,7 @@ from chromadb.utils import embedding_functions
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from loguru import logger
 
-client = chromadb.PersistentClient(path="./chroma_db")
+client = chromadb.EphemeralClient()
 embedding_fn = embedding_functions.DefaultEmbeddingFunction()
 
 splitter = RecursiveCharacterTextSplitter(
