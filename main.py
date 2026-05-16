@@ -1,22 +1,20 @@
-from app.agent.graph import build_graph
+from fastapi import FastAPI
+from app.api.routes import router
 from loguru import logger
 
-def main():
-    logger.info("Iniciando o agente...")
-    graph = build_graph()
+app = FastAPI(
+    title="Docvyn",
+    description="Intelligent Document Analysis Agent",
+    version="2.0.0"
+)
 
-    file_path = input("Document path (CSV or PDF): ").strip()
-    question = input("Your question: ").strip()
+app.include_router(router)
 
-    result = graph.invoke({
-        "question": question,
-        "file_path": file_path,
-        "file_type": "",
-        "answer": ""
-    })
-
-    logger.success("Resposta gerada!")
-    print(f"\n📄 Resposta: {result['answer']}")
+@app.get("/health")
+def health():
+    return {"status": "ok", "version": "2.0.0"}
 
 if __name__ == "__main__":
-    main()
+    import uvicorn
+    logger.info("Iniciando Docvyn API...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
