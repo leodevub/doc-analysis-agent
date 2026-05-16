@@ -25,7 +25,7 @@ def index_document(doc_id: str, text: str):
     collection.add(documents=chunks, ids=ids)
     logger.success(f"{len(chunks)} chunks indexados")
 
-def query_document(question: str, n_results: int = 3) -> str:
+def query_document(question: str, n_results: int = 5) -> str:
     logger.info(f"Buscando chunks relevantes para: {question}")
     collection = client.get_or_create_collection(
         name="documents",
