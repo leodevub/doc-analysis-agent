@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "http://api:8000"
+API_URL = "https://docvyn-api.onrender.com"
 
 st.set_page_config(
     page_title="Docvyn",
